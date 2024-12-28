@@ -4,10 +4,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cp .env.dev .env && tsc --project tsconfig.json && node --env-file=.env ./build/index",
+    "start": "tsc --project tsconfig.json && node --env-file=.env ./build/index",
     "start:dev": "cp .env.dev .env && tsnd --respawn --env-file=.env index.ts",
     "prepare": "husky",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "build": "tsc --project tsconfig.json && node --env-file=.env ./build/index"
   },
   "keywords": [],
   "author": "",
