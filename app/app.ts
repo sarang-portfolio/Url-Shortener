@@ -1,15 +1,15 @@
-import express from "express";
-import { connectToPostgres } from "./connections/postgres.connection";
-import { registerRoutes } from "./modules/routes/routes.register";
+import express from 'express';
+import { connectToPostgres } from './connections/postgres.connection';
+import { registerRoutes } from './modules/routes/routes.register';
 import {
   ERROR_MESSAGES,
   SUCCESS_MESSAGES,
-} from "./utility/common/constants/message.constants";
-import { SUCCESS_CODES } from "./utility/common/constants/statusCode.constants";
-import logger from "./utility/logger";
-import { ResponseHandler } from "./utility/responseHandler";
-import { healthCheckRoute } from "./utility/common/constants/routes.constants";
-import { setupSwagger } from "./utility/swagger";
+} from './utility/common/constants/message.constants';
+import { SUCCESS_CODES } from './utility/common/constants/statusCode.constants';
+import logger from './utility/logger';
+import { ResponseHandler } from './utility/responseHandler';
+import { healthCheckRoute } from './utility/common/constants/routes.constants';
+import { setupSwagger } from './utility/swagger';
 
 const { SERVER_RUN_FAILURE } = ERROR_MESSAGES;
 const { SERVER_RUN_SUCCESS, HEALTH_CHECK_SUCCESS } = SUCCESS_MESSAGES;
@@ -52,7 +52,7 @@ export const startServer = async () => {
         new ResponseHandler({
           statusCode: SUCCESS_CODES.OK,
           message: HEALTH_CHECK_SUCCESS,
-        })
+        }),
       );
     });
   } catch (e) {

@@ -7,7 +7,7 @@
     "start": "cp .env.dev .env && tsc --project tsconfig.json && node --env-file=.env ./build/index",
     "start:dev": "cp .env.dev .env && tsnd --respawn --env-file=.env index.ts",
     "prepare": "husky",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\""
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",

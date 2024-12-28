@@ -1,9 +1,9 @@
-import cors from "cors";
-import { Application, NextFunction, Request, Response, json } from "express";
-import helmet from "helmet";
-import { ResponseHandler } from "../../utility/responseHandler";
-import { routes } from "./routes.data";
-import { ERROR_CODES } from "../../utility/common/constants/statusCode.constants";
+import cors from 'cors';
+import { Application, NextFunction, Request, Response, json } from 'express';
+import helmet from 'helmet';
+import { ResponseHandler } from '../../utility/responseHandler';
+import { routes } from './routes.data';
+import { ERROR_CODES } from '../../utility/common/constants/statusCode.constants';
 
 export const registerRoutes = (app: Application) => {
   app.use(helmet());

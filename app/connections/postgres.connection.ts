@@ -1,6 +1,6 @@
-import { SUCCESS_MESSAGES } from "../utility/common/constants/message.constants";
-import logger from "../utility/logger";
-import { sequelize } from "../utility/sequelize";
+import { SUCCESS_MESSAGES } from '../utility/common/constants/message.constants';
+import logger from '../utility/logger';
+import { sequelize } from '../utility/sequelize';
 
 export const connectToPostgres = async () => {
   try {

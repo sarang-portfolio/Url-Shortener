@@ -1,3 +1,3 @@
-import { Routes } from "./routes.types";
+import { Routes } from './routes.types';
 
 export const routes: Routes = [];

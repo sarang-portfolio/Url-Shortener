@@ -1,7 +1,13 @@
 export class ResponseHandler {
-  constructor(public data: any, public error: any = null) {}
+  constructor(
+    public data: any,
+    public error: any = null,
+  ) {}
 }
 
 export class MessageHandler {
-  constructor(public statusCode: number, public message: any) {}
+  constructor(
+    public statusCode: number,
+    public message: any,
+  ) {}
 }

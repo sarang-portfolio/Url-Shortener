@@ -1,7 +1,10 @@
-import { Router } from "express";
+import { Router } from 'express';
 
 export class Route {
-  constructor(public path: string, public router: Router) {}
+  constructor(
+    public path: string,
+    public router: Router,
+  ) {}
 }
 
 export type Routes = Route[];

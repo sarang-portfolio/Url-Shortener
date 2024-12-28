@@ -1,3 +1,3 @@
 export const healthCheckRoute = {
-  HEALTH_CHECK: "/healthCheck",
+  HEALTH_CHECK: '/healthCheck',
 };
