@@ -1,7 +1,7 @@
 import userRepo from './user.repo';
-import { createUserDto, getOneUserDto, IUser } from './user.types';
+import { CreateUserDto, GetOneUserDto } from './user.types';
 
-const createUser = async (userDto: createUserDto) => {
+const createUser = async (userDto: CreateUserDto) => {
   try {
     const newUser = await userRepo.create(userDto);
     return newUser;
@@ -19,7 +19,7 @@ const getAllUsers = async () => {
   }
 };
 
-const getOneUser = async (getOneUserDto: getOneUserDto) => {
+const getOneUser = async (getOneUserDto: GetOneUserDto) => {
   try {
     const user = await userRepo.getOne(getOneUserDto);
     return user;

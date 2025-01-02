@@ -9,16 +9,18 @@ export interface IUser
   extends Model<InferAttributes<IUser>, InferCreationAttributes<IUser>> {
   id?: CreationOptional<number>;
   email: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date | null;
+  sub: string;
+  createdAt?: CreationOptional<Date>;
+  updatedAt?: CreationOptional<Date>;
+  deletedAt?: CreationOptional<Date | null>;
 }
 
-export interface getOneUserDto {
-  id?: number;
+export interface GetOneUserDto {
+  sub?: string;
   email?: string;
 }
 
-export interface createUserDto {
+export interface CreateUserDto {
   email: string;
+  sub: string;
 }

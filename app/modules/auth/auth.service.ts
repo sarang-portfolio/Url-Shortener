@@ -1,4 +1,3 @@
-import { createJwtToken } from '../../utility/authorize';
 import { verifyIdToken } from '../../utility/OAuth2.google';
 import userService from '../user/user.service';
 
@@ -9,8 +8,9 @@ const login = async (idToken: string) => {
       (await userService.getOneUser({ email: payload?.email })) ||
       (await userService.createUser({
         email: payload?.email as string,
+        sub: payload?.sub as string,
       }));
-    return { id: user.id, token: idToken };
+    return { token: idToken };
   } catch (error) {
     throw error;
   }

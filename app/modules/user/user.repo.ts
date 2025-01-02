@@ -1,11 +1,11 @@
 import { userModel } from './user.schema';
-import { createUserDto, getOneUserDto, IUser } from './user.types';
+import { CreateUserDto, GetOneUserDto } from './user.types';
 
-const create = (userDto: createUserDto) => userModel.create({ ...userDto });
+const create = (userDto: CreateUserDto) => userModel.create({ ...userDto });
 
 const getAll = () => userModel.findAll();
 
-const getOne = (getOneUserDto: getOneUserDto) =>
+const getOne = (getOneUserDto: GetOneUserDto) =>
   userModel.findOne({ where: { ...getOneUserDto } });
 
 export default {

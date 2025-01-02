@@ -6,4 +6,5 @@ export const COMMON_CONSTANTS = {
   EMAIL_SCOPE: 'https://www.googleapis.com/auth/userinfo.email',
   GOOGLE_ACCESS_TYPE: 'offline',
   INVALID_ID_TOKEN: 'INVALID ID TOKEN',
+  SHORT_BASE_URL: 'https://shortn.it/',
 };

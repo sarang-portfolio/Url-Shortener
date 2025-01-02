@@ -1,16 +1,30 @@
 import { DataTypes } from 'sequelize';
+import { DATABASE_TABLES } from '../../utility/common/constants/database.constants';
 import { sequelize } from '../../utility/sequelize';
 import { IUser } from './user.types';
-import { USER_TABLES } from './user.constants';
 
 export const userModel = sequelize.define<IUser>(
-  USER_TABLES.USERS,
+  DATABASE_TABLES.USERS,
   {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
+    sub: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
   },
-  { timestamps: true, paranoid: true },
+  {
+    timestamps: true,
+    paranoid: true,
+    indexes: [
+      {
+        fields: ['sub'],
+        unique: true,
+      },
+    ],
+  },
 );
