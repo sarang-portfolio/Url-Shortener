@@ -22,7 +22,6 @@ export const authorize = (excludedPaths: IExcludedPaths[]) => {
       res.locals.user = payload;
       next();
     } catch (e) {
-      console.log(e);
       next({
         statusCode: ERROR_CODES.FORBIDDEN,
         message: ERROR_MESSAGES.UNAUTHORIZED,

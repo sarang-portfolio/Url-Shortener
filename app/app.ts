@@ -8,6 +8,7 @@ import {
 import { HEALTH_CHECK_ROUTES } from './utility/common/constants/routes.constants';
 import { SUCCESS_CODES } from './utility/common/constants/statusCode.constants';
 import logger from './utility/logger';
+import redisClient from './utility/redis';
 import { ResponseHandler } from './utility/responseHandler';
 import { setupSwagger } from './utility/swagger';
 
@@ -20,12 +21,32 @@ export const startServer = async () => {
   try {
     await connectToPostgres();
     registerRoutes(app);
+    await redisClient.connect();
     setupSwagger(app);
 
     /**
-     * @openapi
+     * @swagger
+     * components:
+     *   securitySchemes:
+     *     apiKeyAuth:
+     *       type: apiKey
+     *       in: header
+     *       name: Authorization
+     */
+
+    /**
+     * @swagger
+     * tags:
+     *   - name: Server Health
+     *     description: Health Check operations for Server.
+     */
+
+    /**
+     * @swagger
      * /healthCheck:
      *   get:
+     *     tags:
+     *       - Server Health
      *     summary: Health check route
      *     description: Verifies if the server is up and running.
      *     responses:
@@ -41,8 +62,17 @@ export const startServer = async () => {
      *                   example: 200
      *                 message:
      *                   type: string
-     *                   example: "HEALTH CHECK SUCCESSFULL"
+     *                   example: "HEALTH CHECK SUCCESSFUL"
      */
+
+    app.get(HEALTH_CHECK_ROUTES.PUBLIC_HEALTH_CHECK, (req, res, next) => {
+      res.send(
+        new ResponseHandler({
+          statusCode: SUCCESS_CODES.OK,
+          message: HEALTH_CHECK_SUCCESS,
+        }),
+      );
+    });
 
     app.get(HEALTH_CHECK_ROUTES.PUBLIC_HEALTH_CHECK, (req, res, next) => {
       res.send(

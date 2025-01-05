@@ -5,6 +5,7 @@ import urlRepo from './url.repo';
 import { IUrl, GetOneUrlDto } from './url.types';
 import { COMMON_CONSTANTS } from '../../utility/common/constants/common.constants';
 import { USER_CONSTANTS } from '../user/user.constants';
+import redisClient from '../../utility/redis';
 
 const { NOT_FOUND } = USER_CONSTANTS;
 const { SHORT_BASE_URL } = COMMON_CONSTANTS;
@@ -48,6 +49,9 @@ const createUrl = async (urlDto: {
 
     const url = await urlRepo.create(data);
 
+    await redisClient.set(shortenedUrl, urlDto.longUrl, { EX: 3600 });
+    await redisClient.set(urlDto.longUrl, shortenedUrl, { EX: 3600 });
+
     return { shortUrl: shortenedUrl, createdAt: url.createdAt as Date };
   } catch (error) {
     if (error instanceof TypeError) {
@@ -81,6 +85,7 @@ const updateOneUrl = async (
 ): Promise<[affectedCount: number]> => {
   try {
     const result = await urlRepo.updateOne(id, updateDto);
+    await redisClient.del(updateDto?.shortUrl as string); // Invalidate cache when URL is updated or deleted
     return result;
   } catch (error) {
     throw error;
