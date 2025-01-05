@@ -32,6 +32,12 @@ export const urlModel = sequelize.define<IUrl>(
       {
         fields: ['userId'],
       },
+      {
+        fields: ['shortUrl'],
+      },
+      {
+        fields: ['longUrl'],
+      },
     ],
   },
 );

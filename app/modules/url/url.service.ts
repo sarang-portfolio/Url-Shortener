@@ -21,9 +21,6 @@ const createUrl = async (urlDto: {
       throw MISSING_LONG_URL;
     }
     new URL(urlDto.longUrl);
-    // if (!urlPattern.test(urlDto.longUrl)) {
-    //   throw INVALID_URL_FORMAT;
-    // }
     const user = await userService.getOneUser({ sub: urlDto.sub });
     if (!user) {
       throw NOT_FOUND;
@@ -46,6 +43,7 @@ const createUrl = async (urlDto: {
       ...restOfUrlDto,
       userId: user?.id as number,
       shortUrl: shortenedUrl,
+      customAlias: urlDto.customAlias || shortCode, // Ensure customAlias is set
     };
 
     const url = await urlRepo.create(data);
@@ -59,7 +57,7 @@ const createUrl = async (urlDto: {
   }
 };
 
-const getAllUrls = async () => {
+const getAllUrls = async (): Promise<IUrl[]> => {
   try {
     const urls = await urlRepo.getAll();
     return urls;
@@ -68,7 +66,7 @@ const getAllUrls = async () => {
   }
 };
 
-const getOneUrl = async (getOneDto: GetOneUrlDto) => {
+const getOneUrl = async (getOneDto: GetOneUrlDto): Promise<IUrl | null> => {
   try {
     const url = await urlRepo.getOne(getOneDto);
     return url;
@@ -77,7 +75,10 @@ const getOneUrl = async (getOneDto: GetOneUrlDto) => {
   }
 };
 
-const updateOneUrl = async (id: number, updateDto: Partial<IUrl>) => {
+const updateOneUrl = async (
+  id: number,
+  updateDto: Partial<IUrl>,
+): Promise<[affectedCount: number]> => {
   try {
     const result = await urlRepo.updateOne(id, updateDto);
     return result;
@@ -86,7 +87,7 @@ const updateOneUrl = async (id: number, updateDto: Partial<IUrl>) => {
   }
 };
 
-const deleteOneUrl = async (id: number) => {
+const deleteOneUrl = async (id: number): Promise<number> => {
   try {
     const result = await urlRepo.deleteOne(id);
     return result;

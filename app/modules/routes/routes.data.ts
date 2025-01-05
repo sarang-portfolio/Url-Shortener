@@ -8,6 +8,7 @@ import {
   IExcludedPaths,
   Method,
 } from '../../utility/common/types/common.types';
+import { AnaylticsRouter } from '../analytics/analytics.routes';
 import { AuthRouter } from '../auth/auth.routes';
 import { UrlRouter } from '../url/url.routes';
 import { Route, Routes } from './routes.types';
@@ -21,6 +22,7 @@ const { PUBLIC_HEALTH_CHECK } = HEALTH_CHECK_ROUTES;
 export const routes: Routes = [
   new Route(PUBLIC_AUTH_ROUTE, AuthRouter),
   new Route('/url', UrlRouter),
+  new Route('/analytics', AnaylticsRouter),
 ];
 
 export const excludedPaths: IExcludedPaths[] = [

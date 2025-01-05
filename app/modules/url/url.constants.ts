@@ -7,4 +7,5 @@ export const URL_CONSTANTS = {
   ),
   MISSING_LONG_URL: new MessageHandler(400, 'LONG URL IS REQUIRED'),
   INVALID_URL_FORMAT: new MessageHandler(400, 'INVALID LONG URL FORMAT'),
+  NOT_FOUND: new MessageHandler(404, 'URL NOT FOUND'),
 };
