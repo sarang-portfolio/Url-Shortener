@@ -6,7 +6,7 @@
     "build": "tsc --project tsconfig.json",
     "test": "node --env-file=.env ./node_modules/.bin/jest --runInBand --detectOpenHandles",
     "start:dev": "cp .env.dev .env && tsnd --respawn --env-file=.env index.ts",
-    "start:prod": "node --env-file=.env ./build/index.js",
+    "start:prod": "tsc --project tsconfig.json && node --env-file=.env ./build/index && node build/index.js",
     "prepare": "husky",
     "format": "prettier --write ."
   },
