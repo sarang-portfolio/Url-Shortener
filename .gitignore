@@ -4,3 +4,5 @@ node_modules
 .env.prod
 logs
 build
+coverage
+.vscode

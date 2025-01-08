@@ -1,0 +1,86 @@
+Always show details
+# Prepare the updated design and architecture document including all routes and caching information.
+design_document_content = """
+Project Design and Architecture Documentation
+
+1. Overview:
+   The project is a URL shortening service with analytics and caching implemented using Redis. It includes routes for creating, retrieving, updating, and deleting URLs, as well as analytics for overall and topic-based data.
+
+2. Route Details:
+   a. /auth/login (GET):
+      - Logs the user using Google Oauth2 and returns the IdToken.
+      - This route calls `authService.login` and sends the response.
+      - Uses error handling via try-catch and invokes `next` to handle any errors.
+
+   a. /analytics/overall (GET):
+      - Retrieves overall analytics for a user based on the `sub` value from the authenticated user.
+      - This route calls `analyticsService.overallAnalytics` and sends the response.
+      - Uses error handling via try-catch and invokes `next` to handle any errors.
+      
+   b. /analytics/topic/:topic (GET):
+      - Retrieves analytics for a specific topic passed as a URL parameter.
+      - This route calls `analyticsService.topicAnalytics` and sends the response.
+      - Error handling is included to manage errors and pass them along for further handling.
+      
+   c. /analytics/:alias (GET):
+      - Retrieves analytics data for a specific alias.
+      - Caching mechanism implemented using Redis:
+         - First checks Redis for cached data.
+         - If cache exists, sends cached data as the response.
+         - If cache is missing, calls `analyticsService.getAnalyticsData`, stores the result in Redis, and sends the response.
+      - Cache expiration set to 1 hour (3600 seconds).
+      - Error handling ensures proper error propagation to the next middleware.
+
+   d. /url/create (POST):
+      - Creates a new shortened URL for a provided long URL and optionally allows setting a custom alias.
+      - Validates the provided URL and checks for an existing user before creating the new shortened URL.
+      - Uses `nanoid` for generating short URLs and stores data in Redis for cache invalidation.
+      - Error handling ensures that the correct errors are thrown when required parameters are missing or invalid.
+      
+   e. /url/:alias (GET):
+      - Retrieves the long URL for a given alias.
+      - This route first checks Redis for a cached version of the long URL.
+      - If cached data is found, the response is sent directly from the cache.
+      - If not found in the cache, it fetches data from the database and updates the cache.
+
+3. Architecture Decisions:
+
+   a. **Redis Caching**:
+      - Redis is used to cache URL analytics and long URL data.
+      - This helps in reducing load on the database and improving performance by serving frequently accessed data from cache.
+      - Cache expiration time of 3600 seconds is applied to both URL data and analytics responses.
+
+   b. **Error Handling**:
+      - Error handling is implemented throughout the routes with try-catch blocks.
+      - Any errors encountered during API execution are passed to the `next` middleware for centralized error handling.
+      - Custom error codes and messages are used to ensure proper error reporting.
+
+   c. **Modular Architecture**:
+      - The project uses a modular structure, where each feature is separated into its own module (e.g., `url`, `analytics`, `user`).
+      - Each module handles its respective functionality and can be tested and maintained independently.
+
+4. Potential Improvements:
+
+   a. **Analytics Enhancements**:
+      - Consider adding more granular analytics, such as tracking user clicks, geographic data, and referral sources for each shortened URL.
+      - Advanced filtering and sorting of analytics data with pagination functionality allowing more fine statistics for analysing the data.
+
+
+   b. **Database Optimization**:
+      - Ensure proper indexing on frequently queried columns (e.g., `shortUrl`, `longUrl`, `userId`) to improve performance.
+      - Use database partitioning or sharding for large datasets to further optimize query performance.
+
+   c. **Authentication & Authorization**:
+      - Ensure that all API routes are protected with authentication and authorization mechanisms to restrict access to sensitive data.
+      - Implement role-based access control (RBAC) if necessary to manage user permissions more effectively.
+
+   d. **Testing Coverage**:
+      - Add additional tests to ensure full coverage of API routes, including edge cases and error handling scenarios.
+      - Consider using end-to-end testing tools like Cypress or Supertest to simulate real-world user behavior.
+
+   e. **Scalability**:
+      - Evaluate the scalability of Redis and database solutions as the project grows. Consider implementing Redis clustering if necessary for high availability.
+      - Use horizontal scaling strategies for both Redis and database servers to handle increased traffic and data volume.
+
+5. Conclusion:
+   The project is designed with modularity, caching, and error handling in mind to provide an efficient URL shortening and analytics service. Potential improvements focus on enhancing security, scalability, and testing coverage.

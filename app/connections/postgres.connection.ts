@@ -1,4 +1,7 @@
-import { SUCCESS_MESSAGES } from '../utility/common/constants/message.constants';
+import {
+  ERROR_MESSAGES,
+  SUCCESS_MESSAGES,
+} from '../utility/common/constants/message.constants';
 import logger from '../utility/logger';
 import { sequelize } from '../utility/sequelize';
 
@@ -10,6 +13,6 @@ export const connectToPostgres = async () => {
     return true;
   } catch (e) {
     logger.error(e);
-    throw e;
+    throw ERROR_MESSAGES.DATABASE_CONNCECTION_FAILURE;
   }
 };

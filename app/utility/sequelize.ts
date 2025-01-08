@@ -1,4 +1,4 @@
-import { Sequelize, Dialect } from 'sequelize';
+import { Dialect, Sequelize } from 'sequelize';
 import { COMMON_CONSTANTS } from './common/constants/common.constants';
 import logger from './logger';
 
@@ -12,6 +12,18 @@ export const sequelize = new Sequelize(
     host: HOST,
     port: Number(DB_PORT),
     dialect: (DIALECT as Dialect) || COMMON_CONSTANTS.DATABASE_DIALECT,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
     logging: (message) => logger.info(message),
+    pool: {
+      max: 10,
+      min: 0,
+      idle: 10000,
+      acquire: 30000,
+    },
   },
 );
