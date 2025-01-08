@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
+import { URL_ROUTES } from '../../utility/common/constants/routes.constants';
 import {
   detectDeviceType,
   detectOsName,
@@ -14,6 +15,7 @@ import { URL_CONSTANTS } from './url.constants';
 import urlService from './url.service';
 
 export const UrlRouter = Router();
+const { PRIVATE_SHORTEN_URL, PRIVATE_GET_SHORTEN_URL } = URL_ROUTES;
 
 /**
  * @swagger
@@ -122,7 +124,7 @@ export const limiter = rateLimit({
   },
 });
 
-UrlRouter.post('/shorten', limiter, async (req, res, next) => {
+UrlRouter.post(PRIVATE_SHORTEN_URL, limiter, async (req, res, next) => {
   try {
     const data = {
       longUrl: req.body.longUrl,
@@ -137,13 +139,12 @@ UrlRouter.post('/shorten', limiter, async (req, res, next) => {
   }
 });
 
-UrlRouter.get('/shorten/:alias', async (req, res, next) => {
+UrlRouter.get(PRIVATE_GET_SHORTEN_URL, async (req, res, next) => {
   try {
     const { alias } = req.params;
 
     const cachedLongUrl = await redisClient.get(alias);
     if (cachedLongUrl) {
-      // Log analytics even if the URL is cached
       const analytics = {
         timeStamp: new Date(),
         userAgent: req.headers['user-agent'] || 'Unknown',
@@ -155,7 +156,7 @@ UrlRouter.get('/shorten/:alias', async (req, res, next) => {
       logger.info(JSON.stringify(analytics, null, 2));
       const { timeStamp, ...restAnalytics } = analytics;
       await analyticsService.createAnalytics({
-        urlId: 0, // No ID available for cached URLs
+        urlId: 0,
         ...restAnalytics,
       });
 
@@ -166,7 +167,7 @@ UrlRouter.get('/shorten/:alias', async (req, res, next) => {
     if (!response) {
       throw URL_CONSTANTS.NOT_FOUND;
     }
-    await redisClient.set(alias, response.longUrl, { EX: 3600 }); // Cache for 1 hour
+    await redisClient.set(alias, response.longUrl, { EX: 3600 });
 
     const analytics = {
       timeStamp: new Date(),

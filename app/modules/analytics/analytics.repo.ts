@@ -1,9 +1,9 @@
 import { format, subDays } from 'date-fns';
 import { Op } from 'sequelize';
 import { sequelize } from '../../utility/sequelize';
+import { urlModel } from '../url/url.schema';
 import { analyticsModel } from './analytics.schema';
 import { CreateAnalyticsDto, IAnalytics } from './analytics.types';
-import { urlModel } from '../url/url.schema';
 
 const create = (createDto: CreateAnalyticsDto) =>
   analyticsModel.create({ ...createDto });

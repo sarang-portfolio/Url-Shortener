@@ -1,9 +1,9 @@
 import {
-  Model,
-  InferAttributes,
-  InferCreationAttributes,
   CreationOptional,
   ForeignKey,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
 } from 'sequelize';
 
 export interface IAnalytics

@@ -13,15 +13,14 @@ const redisClient = createClient({
       }
       if (cause && cause.code === 'ECONNREFUSED') {
         logger.warn('Connection refused. Retrying...');
-        return Math.min(retries * 1000, 3000); // Retry with increasing delay
+        return Math.min(retries * 1000, 3000);
       }
-      // Default exponential backoff with jitter
       const jitter = Math.floor(Math.random() * 200);
       const delay = Math.min(Math.pow(2, retries) * 50, 2000);
       return delay + jitter;
     },
-    connectTimeout: 10000, // 10 seconds
-    keepAlive: 10000, // 10 seconds
+    connectTimeout: 10000,
+    keepAlive: 10000,
   },
 });
 

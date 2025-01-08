@@ -1,6 +1,6 @@
 import winston from 'winston';
-import { LogLevel } from './common/constants/logger.constants';
 import { COMMON_CONSTANTS } from './common/constants/common.constants';
+import { LogLevel } from './common/constants/logger.constants';
 
 const { NODE_ENV, ERROR_LOG_PATH, COMBINED_LOG_PATH } = process.env;
 const { DATE_FORMAT, ENV_PROD } = COMMON_CONSTANTS;

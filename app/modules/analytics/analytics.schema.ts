@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
 import { DATABASE_TABLES } from '../../utility/common/constants/database.constants';
 import { sequelize } from '../../utility/sequelize';
-import { IAnalytics } from './analytics.types';
 import { urlModel } from '../url/url.schema';
+import { IAnalytics } from './analytics.types';
 
 export const analyticsModel = sequelize.define<IAnalytics>(
   DATABASE_TABLES.ANALYTICS,

@@ -1,11 +1,11 @@
 import { nanoid } from 'nanoid';
+import { COMMON_CONSTANTS } from '../../utility/common/constants/common.constants';
+import redisClient from '../../utility/redis';
+import { USER_CONSTANTS } from '../user/user.constants';
 import userService from '../user/user.service';
 import { URL_CONSTANTS } from './url.constants';
 import urlRepo from './url.repo';
-import { IUrl, GetOneUrlDto } from './url.types';
-import { COMMON_CONSTANTS } from '../../utility/common/constants/common.constants';
-import { USER_CONSTANTS } from '../user/user.constants';
-import redisClient from '../../utility/redis';
+import { GetOneUrlDto, IUrl } from './url.types';
 
 const { NOT_FOUND } = USER_CONSTANTS;
 const { SHORT_BASE_URL } = COMMON_CONSTANTS;
@@ -44,7 +44,7 @@ const createUrl = async (urlDto: {
       ...restOfUrlDto,
       userId: user?.id as number,
       shortUrl: shortenedUrl,
-      customAlias: urlDto.customAlias || shortCode, // Ensure customAlias is set
+      customAlias: urlDto.customAlias || shortCode,
     };
 
     const url = await urlRepo.create(data);
@@ -85,7 +85,7 @@ const updateOneUrl = async (
 ): Promise<[affectedCount: number]> => {
   try {
     const result = await urlRepo.updateOne(id, updateDto);
-    await redisClient.del(updateDto?.shortUrl as string); // Invalidate cache when URL is updated or deleted
+    await redisClient.del(updateDto?.shortUrl as string);
     return result;
   } catch (error) {
     throw error;

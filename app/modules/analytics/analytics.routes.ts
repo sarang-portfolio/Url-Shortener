@@ -1,9 +1,16 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { ANALYTICS_ROUTES } from '../../utility/common/constants/routes.constants';
+import redisClient from '../../utility/redis';
 import { ResponseHandler } from '../../utility/responseHandler';
 import analyticsService from './analytics.service';
-import redisClient from '../../utility/redis';
 
 export const AnaylticsRouter = Router();
+
+const {
+  PRIVATE_GET_OVERALL_ANALYTICS,
+  PRIVATE_GET_TOPIC_ANALYTICS,
+  PRIVATE_GET_CUSTOM_ALIAS_ANALYTICS,
+} = ANALYTICS_ROUTES;
 
 /**
  * @swagger
@@ -216,7 +223,7 @@ export const AnaylticsRouter = Router();
  *         description: Not Found.
  */
 
-AnaylticsRouter.get('/overall', async (req, res, next) => {
+AnaylticsRouter.get(PRIVATE_GET_OVERALL_ANALYTICS, async (req, res, next) => {
   try {
     const { sub } = res.locals.user;
     const response = await analyticsService.overallAnalytics(sub);
@@ -226,7 +233,7 @@ AnaylticsRouter.get('/overall', async (req, res, next) => {
   }
 });
 
-AnaylticsRouter.get('/topic/:topic', async (req, res, next) => {
+AnaylticsRouter.get(PRIVATE_GET_TOPIC_ANALYTICS, async (req, res, next) => {
   try {
     const { topic } = req.params;
     const response = await analyticsService.topicAnalytics(topic);
@@ -237,7 +244,7 @@ AnaylticsRouter.get('/topic/:topic', async (req, res, next) => {
 });
 
 AnaylticsRouter.get(
-  '/:alias',
+  PRIVATE_GET_CUSTOM_ALIAS_ANALYTICS,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { alias } = req.params;

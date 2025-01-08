@@ -1,4 +1,4 @@
-import { Sequelize, Dialect } from 'sequelize';
+import { Dialect, Sequelize } from 'sequelize';
 import { COMMON_CONSTANTS } from './common/constants/common.constants';
 import logger from './logger';
 

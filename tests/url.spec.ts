@@ -146,7 +146,6 @@ describe('POST /shorten', () => {
   });
 
   it('should return 429 if rate limit is exceeded', async () => {
-    // Simulate hitting the rate limit
     for (let i = 0; i < 3; i++) {
       await request(app)
         .post('/url/shorten')

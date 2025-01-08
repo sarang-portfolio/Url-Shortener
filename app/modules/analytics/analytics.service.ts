@@ -44,6 +44,9 @@ const getAnalyticsData = async (alias: string) => {
     const dailyClicks = await analyticsRepo.clickByDate(urlId);
     const osData = await analyticsRepo.osTypeAnalytics(urlId);
     const deviceData = await analyticsRepo.deviceTypeAnalytics(urlId);
+
+    if (!totalClicks) throw ANALYTICS_CONSTANTS.NOT_FOUND;
+
     return {
       totalClicks,
       uniqueUsers,
@@ -51,7 +54,10 @@ const getAnalyticsData = async (alias: string) => {
       osType: osData,
       deviceType: deviceData,
     };
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message && error.message.includes('NO DATA FOUND')) {
+      throw error;
+    }
     throw ANALYTICS_CONSTANTS.INTERNAL_SERVER_ERROR;
   }
 };
@@ -62,13 +68,19 @@ const topicAnalytics = async (topic: string) => {
     const uniqueUsers = await analyticsRepo.uniqueUsersByTopic(topic);
     const clicksByDate = await analyticsRepo.clicksByDateForTopic(topic);
     const urls = await analyticsRepo.urlsByTopic(topic);
+
+    if (!totalClicks) throw ANALYTICS_CONSTANTS.NOT_FOUND;
+
     return {
       totalClicks,
       uniqueUsers,
       clicksByDate,
       urls,
     };
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message && error.message.includes('NO DATA FOUND')) {
+      throw error;
+    }
     throw ANALYTICS_CONSTANTS.INTERNAL_SERVER_ERROR;
   }
 };

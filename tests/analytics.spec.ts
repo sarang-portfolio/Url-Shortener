@@ -114,15 +114,13 @@ describe('GET /analytics/overall', () => {
     const mockAnalyticsData = { totalUsers: 100, totalClicks: 2000 };
     const mockUser = { sub: '123' };
 
-    // Mocking analyticsService
     analyticsService.overallAnalytics = jest
       .fn()
       .mockResolvedValue(mockAnalyticsData);
 
-    // Mocking the user data in res.locals
     const res = await request(app)
       .get('/analytics/overall')
-      .set('Authorization', mockToken) // provide necessary headers
+      .set('Authorization', mockToken)
       .expect(200);
 
     expect(analyticsService.overallAnalytics).toHaveBeenCalledWith(
@@ -147,7 +145,7 @@ describe('GET /analytics/overall', () => {
 
 describe('GET /analytics/topic/:topic', () => {
   it('should return analytics data for a specific topic', async () => {
-    const mockAnalyticsData = { totalViews: 5000, engagementRate: 0.85 }; // example data
+    const mockAnalyticsData = { totalViews: 5000, engagementRate: 0.85 };
     const topic = 'NodeJS';
 
     analyticsService.topicAnalytics = jest
