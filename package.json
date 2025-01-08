@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "tsc --project tsconfig.json",
     "test": "node --env-file=.env ./node_modules/.bin/jest --runInBand --detectOpenHandles",
-    "start": "tsc --project tsconfig.json && node --env-file=.env ./build/index && node build/index.js",
     "start:dev": "cp .env.dev .env && tsnd --respawn --env-file=.env index.ts",
-    "start:prod": "tsc --project tsconfig.json && node --env-file=.env ./build/index && node build/index.js",
+    "start:prod": "node --env-file=.env ./build/index.js",
     "prepare": "husky",
     "format": "prettier --write ."
   },
