@@ -10,6 +10,7 @@ jest.mock('../app/utility/sequelize.ts', () => ({
   sequelize: {
     authenticate: jest.fn(),
     sync: jest.fn(),
+    close: jest.fn(),
   },
 }));
 
@@ -39,6 +40,11 @@ jest.mock('winston', () => {
 
 describe('connectToPostgres', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(async () => {
+    await sequelize.close();
     jest.clearAllMocks();
   });
 

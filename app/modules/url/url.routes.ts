@@ -110,11 +110,16 @@ export const UrlRouter = Router();
  *           description: Error details if any.
  */
 
-const limiter = rateLimit({
+export const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 mins
   limit: 3,
   message: 'Too many requests, please try again later',
   standardHeaders: 'draft-8',
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Too many requests, please try again later',
+    });
+  },
 });
 
 UrlRouter.post('/shorten', limiter, async (req, res, next) => {
@@ -138,6 +143,22 @@ UrlRouter.get('/shorten/:alias', async (req, res, next) => {
 
     const cachedLongUrl = await redisClient.get(alias);
     if (cachedLongUrl) {
+      // Log analytics even if the URL is cached
+      const analytics = {
+        timeStamp: new Date(),
+        userAgent: req.headers['user-agent'] || 'Unknown',
+        ipAddress: getIpAddress(req),
+        geoLocation: getGeoLocation(getIpAddress(req)),
+        deviceType: detectDeviceType(req.headers['user-agent'] || 'Unknown'),
+        osName: detectOsName(req.headers['user-agent'] || 'Unknown'),
+      };
+      logger.info(JSON.stringify(analytics, null, 2));
+      const { timeStamp, ...restAnalytics } = analytics;
+      await analyticsService.createAnalytics({
+        urlId: 0, // No ID available for cached URLs
+        ...restAnalytics,
+      });
+
       return res.status(302).redirect(cachedLongUrl);
     }
 
@@ -157,7 +178,7 @@ UrlRouter.get('/shorten/:alias', async (req, res, next) => {
     };
     logger.info(JSON.stringify(analytics, null, 2));
     const { timeStamp, ...restAnalytics } = analytics;
-    await analyticsService.CreateAnalytics({
+    await analyticsService.createAnalytics({
       urlId: response.id ?? 0,
       ...restAnalytics,
     });

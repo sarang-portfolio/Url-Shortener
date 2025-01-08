@@ -3,9 +3,11 @@ import request from 'supertest';
 import app, { startServer } from '../app/app';
 import { AUTH_CONSTANTS } from '../app/modules/auth/auth.constants';
 import authService from '../app/modules/auth/auth.service';
-import { getAuthUrl, getToken } from '../app/utility/OAuth2.google';
-import { ResponseHandler } from '../app/utility/responseHandler';
 import { ERROR_MESSAGES } from '../app/utility/common/constants/message.constants';
+import { getAuthUrl, getToken } from '../app/utility/OAuth2.google';
+import redisClient from '../app/utility/redis';
+import { ResponseHandler } from '../app/utility/responseHandler';
+import { sequelize } from '../app/utility/sequelize';
 
 jest.mock('../app/utility/OAuth2.google.ts', () => ({
   getAuthUrl: jest.fn(),
@@ -44,56 +46,55 @@ describe('GET /auth/login', () => {
   beforeAll(async () => {
     try {
       server = await startServer();
+      await sequelize.authenticate();
     } catch (error) {
-      console.error(ERROR_MESSAGES.SERVER_RUN_FAILURE);
+      console.error(ERROR_MESSAGES.SERVER_RUN_FAILURE, error);
     }
   });
 
   afterAll(async () => {
     server.close();
+    await sequelize.close();
+    await redisClient.disconnect();
+    jest.clearAllMocks();
   });
 
-  describe('GET /auth/login', () => {
-    it('should redirect to Google auth URL', async () => {
-      const mockAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
-      (getAuthUrl as jest.Mock).mockReturnValue(mockAuthUrl);
+  it('should redirect to Google auth URL', async () => {
+    const mockAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
+    (getAuthUrl as jest.Mock).mockReturnValue(mockAuthUrl);
 
-      const response = await request(app).get('/auth/login');
+    const response = await request(app).get('/auth/login');
 
-      expect(response.status).toBe(302);
-      expect(response.header.location).toBe(mockAuthUrl);
-    });
+    expect(response.status).toBe(302);
+    expect(response.header.location).toBe(mockAuthUrl);
   });
 
-  describe('GET /auth/oauth2callback', () => {
-    it('should return an error if code is missing', async () => {
-      const response = await request(app).get('/auth/oauth2callback');
+  it('should return an error if code is missing', async () => {
+    const response = await request(app).get('/auth/oauth2callback');
 
-      expect(response.status).toBe(400);
-      expect(JSON.stringify(response.body.error)).toEqual(
-        JSON.stringify(AUTH_CONSTANTS.MISSING_AUTH_CODE),
-      );
-    });
+    expect(response.status).toBe(400);
+    expect(JSON.stringify(response.body.error)).toEqual(
+      JSON.stringify(AUTH_CONSTANTS.MISSING_AUTH_CODE),
+    );
+  });
 
-    it('should login user and return response on valid code', async () => {
-      const mockCode = 'mockAuthorizationCode';
-      const mockTokens = {
-        id_token: 'mockIdToken',
-      };
-      const mockResponse = {
-        id: 123,
-        token: 'mockIdToken',
-      };
+  it('should login user and return response on valid code', async () => {
+    const mockCode = 'mockAuthorizationCode';
+    const mockTokens = {
+      id_token: 'mockIdToken',
+    };
+    const mockResponse = {
+      token: 'mockIdToken',
+    };
 
-      (getToken as jest.Mock).mockResolvedValue(mockTokens);
-      (authService.login as jest.Mock).mockResolvedValue(mockResponse);
+    (getToken as jest.Mock).mockResolvedValue(mockTokens);
+    (authService.login as jest.Mock).mockResolvedValue(mockResponse);
 
-      const response = await request(app)
-        .get('/auth/oauth2callback')
-        .query({ code: mockCode });
+    const response = await request(app)
+      .get('/auth/oauth2callback')
+      .query({ code: mockCode });
 
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual(new ResponseHandler(mockResponse));
-    });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(new ResponseHandler(mockResponse));
   });
 });

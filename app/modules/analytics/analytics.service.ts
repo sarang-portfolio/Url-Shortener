@@ -1,10 +1,11 @@
 import { URL_CONSTANTS } from '../url/url.constants';
 import urlService from '../url/url.service';
 import userService from '../user/user.service';
+import { ANALYTICS_CONSTANTS } from './analytics.constants';
 import analyticsRepo from './analytics.repo';
 import { CreateAnalyticsDto, IAnalytics } from './analytics.types';
 
-const CreateAnalytics = async (createDto: CreateAnalyticsDto) => {
+const createAnalytics = async (createDto: CreateAnalyticsDto) => {
   try {
     const analytics = await analyticsRepo.create(createDto);
     return analytics;
@@ -51,7 +52,7 @@ const getAnalyticsData = async (alias: string) => {
       deviceType: deviceData,
     };
   } catch (error) {
-    throw error;
+    throw ANALYTICS_CONSTANTS.INTERNAL_SERVER_ERROR;
   }
 };
 
@@ -68,7 +69,7 @@ const topicAnalytics = async (topic: string) => {
       urls,
     };
   } catch (error) {
-    throw error;
+    throw ANALYTICS_CONSTANTS.INTERNAL_SERVER_ERROR;
   }
 };
 
@@ -80,12 +81,12 @@ const overallAnalytics = async (sub: string) => {
     );
     return analytics;
   } catch (error) {
-    throw error;
+    throw ANALYTICS_CONSTANTS.INTERNAL_SERVER_ERROR;
   }
 };
 
 export default {
-  CreateAnalytics,
+  createAnalytics,
   getAllAnalytics,
   getOneAnalytics,
   getAnalyticsData,
