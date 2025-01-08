@@ -84,7 +84,7 @@ export const startServer = async () => {
     });
 
     const { PORT } = process.env;
-    const server = app.listen(PORT, () =>
+    const server = app.listen(PORT || 3000, () =>
       logger.info(`${SERVER_RUN_SUCCESS}: ${PORT}`),
     );
     return server;
