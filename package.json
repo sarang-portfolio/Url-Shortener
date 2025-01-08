@@ -4,9 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "node --env-file=.env ./node_modules/.bin/jest --runInBand --detectOpenHandles",
-    "start": "tsc --project tsconfig.json && node --env-file=.env ./build/index && node --max-old-space-size=4096 build/index.js",
+    "start": "tsc --project tsconfig.json && node --env-file=.env ./build/index && node build/index.js",
     "start:dev": "cp .env.dev .env && tsnd --respawn --env-file=.env index.ts",
-    "start:prod": "cp .env.prod .env && tsnd --respawn --env-file=.env index.ts",
+    "start:prod": "cp .env.prod .env && tsc --project tsconfig.json && node --env-file=.env ./build/index && node build/index.js",
     "prepare": "husky",
     "format": "prettier --write ."
   },
